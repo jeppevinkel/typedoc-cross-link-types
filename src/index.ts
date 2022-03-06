@@ -1,4 +1,4 @@
-import {Application, ParameterType, TypeDocOptionMap} from 'typedoc'
+import {Application, ParameterType} from 'typedoc'
 
 // declare module 'typedoc' {
 //     export interface TypeDocOptionMap {
@@ -31,11 +31,13 @@ export function load(app: Application) {
 
         definitions.forEach(definition => {
             const [from, to] = definition.split(':')
-            definitionMap.set(from.trim(), to.trim())
+            definitionMap.set(from.trim().toLowerCase(), to.trim())
+            app.logger.info(`Added cross-package definition: ${from} -> ${to}`)
         })
 
-        if (definitionMap.has(name)) {
-            return definitionMap.get(name)
+        if (definitionMap.has(name.toLowerCase())) {
+            app.logger.info(definitionMap.get(name.toLowerCase()) ?? 'WUT???')
+            return definitionMap.get(name.toLowerCase())
         }
     })
 }
