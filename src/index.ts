@@ -30,7 +30,7 @@ export function load(app: Application) {
         const definitionArray = app.options.getValue('cross-package-definitions') as string[]
 
         definitionArray.forEach(definition => {
-            const [from, to] = definition.split(':')
+            const [from, to] = definition.split('=>').map(s => s.trim())
             const [fromPackage, fromModule] = from.split('//')
             app.logger.info(`Adding cross-package definition: ${from} -> ${to}`)
 
@@ -40,7 +40,7 @@ export function load(app: Application) {
         definitions.forEach(definition => {
             app.renderer.addUnknownSymbolResolver(definition.package, (name: string) => {
                 if (name === definition.name) {
-                    return definition.url.trim()
+                    return definition.url
                 }
             })
         })
