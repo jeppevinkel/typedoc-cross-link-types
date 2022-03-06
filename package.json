@@ -1,6 +1,6 @@
 {
   "name": "typedoc-cross-link-types",
-  "version": "1.0.1-beta.2",
+  "version": "1.0.1-beta.3",
   "description": "Create custom cross package links for types",
   "main": "lib/index.js",
   "exports": "./lib/index.js",

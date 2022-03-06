@@ -1,4 +1,4 @@
-import {Application, Context, Converter, ParameterType} from 'typedoc'
+import {Application, EventMap, Context, Converter, ParameterType} from 'typedoc'
 
 export function load(app: Application) {
     app.options.addDeclaration({
@@ -9,10 +9,17 @@ export function load(app: Application) {
     })
 
     app.converter.on(Converter.EVENT_RESOLVE, (context: Context) => {
-        app.logger.info("TEST")
+        // app.logger.info("TEST")
     })
 
-    app.renderer.addUnknownSymbolResolver("@typedoc-cross-link-types", (name: string) => {
+    const definitions = app.options.getValue('cross-package-definitions') as string[]
+
+    definitions.forEach(definition => {
+        const [from, to] = definition.split('=')
+        app.logger.info(`Adding cross-package definition: ${from} -> ${to}`)
+    })
+
+    app.renderer.addUnknownSymbolResolver("typedoc-cross-link-types", (name: string) => {
         const definitions = app.options.getValue('cross-package-definitions') as string[]
 
         const definitionMap = new Map<string, string>()
