@@ -1,4 +1,4 @@
-import {Application, EventMap, Context, Converter, ParameterType, Renderer} from 'typedoc'
+import {Application, Context, ParameterType, Renderer} from 'typedoc'
 
 export class Definition {
     public package: string
@@ -20,10 +20,6 @@ export function load(app: Application) {
         defaultValue: [],
     })
 
-    app.converter.on(Converter.EVENT_RESOLVE, (context: Context) => {
-        // app.logger.info("TEST")
-    })
-
     let definitions: Definition[] = []
 
     app.renderer.on(Renderer.EVENT_BEGIN, (context: Context) => {
@@ -32,7 +28,6 @@ export function load(app: Application) {
         definitionArray.forEach(definition => {
             const [from, to] = definition.split('=>').map(s => s.trim())
             const [fromPackage, fromModule] = from.split('//')
-            app.logger.info(`Adding cross-package definition: ${from} -> ${to}`)
 
             definitions.push(new Definition(fromPackage, fromModule, to))
         })
