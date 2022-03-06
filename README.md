@@ -1,4 +1,5 @@
 # typedoc-cross-link-types
+[![npm](https://img.shields.io/npm/v/typedoc-cross-link-types)](https://www.npmjs.com/package/typedoc-cross-link-types)
 
 TypeDoc plugin that enables cross-linking to types from other packages.
 
