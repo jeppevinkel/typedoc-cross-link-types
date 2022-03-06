@@ -22,6 +22,13 @@
   "peerDependencies": {
     "typedoc": "0.22.x"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jeppevinkel/typedoc-cross-link-types.git"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
   "devDependencies": {
     "@types/node": "^17.0.21",
     "typedoc": "^0.22.12",
