@@ -1,31 +1,19 @@
-import {Application, ParameterType} from 'typedoc'
-
-// declare module 'typedoc' {
-//     export interface TypeDocOptionMap {
-//         crossPackageDefinitions: Map<string, string>
-//     }
-// }
+import {Application, Context, Converter, ParameterType} from 'typedoc'
 
 export function load(app: Application) {
-    // app.options.addDeclaration({
-    //     name: 'crossPackageDefinitions',
-    //     help: 'Define cross-package definitions',
-    //     type: ParameterType.Map,
-    //     defaultValue: new Map<string, string>(),
-    //     map: {
-    //         crossPackageDefinitions: 'crossPackageDefinitions'
-    //     }
-    // })
-
     app.options.addDeclaration({
-        name: 'crossPackageDefinitions',
+        name: 'cross-package-definitions',
         help: 'Define cross-package definitions',
         type: ParameterType.Array,
         defaultValue: [],
     })
 
+    app.converter.on(Converter.EVENT_RESOLVE, (context: Context) => {
+        app.logger.info("TEST")
+    })
+
     app.renderer.addUnknownSymbolResolver("@typedoc-cross-link-types", (name: string) => {
-        const definitions = app.options.getValue('crossPackageDefinitions') as string[]
+        const definitions = app.options.getValue('cross-package-definitions') as string[]
 
         const definitionMap = new Map<string, string>()
 
