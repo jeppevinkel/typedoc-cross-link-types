@@ -1,5 +1,17 @@
 import {Application, EventMap, Context, Converter, ParameterType, Renderer} from 'typedoc'
 
+export class Definition {
+    public package: string
+    public name: string
+    public url: string
+
+    constructor(module: string, name: string, url: string) {
+        this.package = module
+        this.name = name
+        this.url = url
+    }
+}
+
 export function load(app: Application) {
     app.options.addDeclaration({
         name: 'cross-package-definitions',
@@ -12,31 +24,25 @@ export function load(app: Application) {
         // app.logger.info("TEST")
     })
 
-    let definitions: string[] = []
+    let definitions: Definition[] = []
 
     app.renderer.on(Renderer.EVENT_BEGIN, (context: Context) => {
-        definitions = app.options.getValue('cross-package-definitions') as string[]
+        const definitionArray = app.options.getValue('cross-package-definitions') as string[]
 
-        definitions.forEach(definition => {
-            const [from, to] = definition.split('=')
-            app.logger.info(`Adding cross-package definition: ${from} -> ${to}`)
-        })
-    })
-
-    app.renderer.addUnknownSymbolResolver("typedoc-cross-link-types", (name: string) => {
-        const definitions = app.options.getValue('cross-package-definitions') as string[]
-
-        const definitionMap = new Map<string, string>()
-
-        definitions.forEach(definition => {
+        definitionArray.forEach(definition => {
             const [from, to] = definition.split(':')
-            definitionMap.set(from.trim().toLowerCase(), to.trim())
-            app.logger.info(`Added cross-package definition: ${from} -> ${to}`)
+            const [fromPackage, fromModule] = from.split('//')
+            app.logger.info(`Adding cross-package definition: ${from} -> ${to}`)
+
+            definitions.push(new Definition(fromPackage, fromModule, to))
         })
 
-        if (definitionMap.has(name.toLowerCase())) {
-            app.logger.info(definitionMap.get(name.toLowerCase()) ?? 'WUT???')
-            return definitionMap.get(name.toLowerCase())
-        }
+        definitions.forEach(definition => {
+            app.renderer.addUnknownSymbolResolver(definition.package, (name: string) => {
+                if (name === definition.name) {
+                    return definition.url.trim()
+                }
+            })
+        })
     })
 }
